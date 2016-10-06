@@ -5,6 +5,7 @@ import shutil
 import imghdr
 
 # priority queue to keep sorted by time? 
+# also add auto sorting
 EXIF_INFO = {}
 main_path = ''
 
@@ -50,6 +51,32 @@ def main():
 			elif copy == 'N':
 				x = False
 				shutter(boundaries, x)
+			else:
+				print('Please only enter Y or N.')
+		elif command == 'iso':
+			inp = raw_input('Enter the iso(s) separated by "," to separate into, i.e 100,200,800: ')
+			boundaries = inp.split(',')
+			boundaries = sorted([val.strip() for val in boundaries])
+			copy = raw_input('Keep copy of original files? (Y/N): ')
+			if copy == 'Y':
+				x = True
+				iso(boundaries, x)
+			elif copy == 'N':
+				x = False
+				iso(boundaries, x)
+			else:
+				print('Please only enter Y or N.')
+		elif command == 'aperture':
+			inp = raw_input('Enter the aperture(s) separated by "," to separate into, i.e 1.4,3.5,6,22: ')
+			boundaries = inp.split(',')
+			boundaries = sorted([val.strip() for val in boundaries], key=lambda x: float(x))
+			copy = raw_input('Keep copy of original files? (Y/N): ')
+			if copy == 'Y':
+				x = True
+				aperture(boundaries, x)
+			elif copy == 'N':
+				x = False
+				aperture(boundaries, x)
 			else:
 				print('Please only enter Y or N.')
 		elif command == 'help':
@@ -100,48 +127,60 @@ def type(copy):
 			move_file(image, main_path + '/JPEG', copy)
 		else:
 			move_file(image, main_path + '/RAW', copy)
+	print("Operation complete.")
 
 # organize by shutter speed
 def shutter(boundaries, copy):
-	print(boundaries)
 	for image in EXIF_INFO:
 		shutter_speed = EXIF_INFO[image]["Exposure time"]
-		print(shutter_speed)
 		if '/' in shutter_speed:
 			num1, den1 = shutter_speed.split('/')
 			den1 = den1.split(' ')[0].strip()
 			num1 = num1.strip()
 			speed1 = float(num1) / float(den1)
-			print(speed1)
 		else:
 			speed1 = float(shutter_speed.split(' ')[0].strip())
-			print(speed1)
 
 		for i in range(len(boundaries)):
-			print(boundaries[i])
-			print(i)
-			print(len(boundaries))
 			if '/' in boundaries[i]:
 				num2, den2 = boundaries[i].split('/')
 				num2 = num2.strip()
 				den2 = den2.strip()
 				speed2 = float(num2) / float(den2)
-				print(speed2)
 			else:
 				speed2 = float(boundaries[i].split('/')[0].strip())
 			if speed1 <= speed2:
-				move_file(image, main_path + '/' + boundaries[i].replace('/', 'x') + '-', copy)
-				print('MOVING ' + image)
+				move_file(image, main_path + '/' + 'SHUTTER' + boundaries[i].replace('/', 'x') + '-', copy)
 				break
 			if i == len(boundaries) - 1:
-				move_file(image, main_path + '/' + boundaries[i].replace('/', 'x') + '+', copy)
-				print('MOVING ' + image)
+				move_file(image, main_path + '/' + 'SHUTTER' + boundaries[i].replace('/', 'x') + '+', copy)
+	print("Operation complete.")
 
 def iso(boundaries, copy):
-	pass
+	for image in EXIF_INFO:
+		iso = int(EXIF_INFO[image]["ISO speed"])
+
+		for i in range(len(boundaries)):
+			bound_iso = boundaries[i]
+			if iso <= int(bound_iso):
+				move_file(image, main_path + '/' + 'ISO' + bound_iso + '-', copy)
+				break
+			if i == len(boundaries) - 1:
+				move_file(image, main_path + '/' + 'ISO' + bound_iso + '+', copy)
+	print("Operation complete.")
 
 def aperture(boundaries, copy):
-	pass
+	for image in EXIF_INFO:
+		aperture = float(EXIF_INFO[image]["Aperture"].split('F')[1])
+
+		for i in range(len(boundaries)):
+			bound_aperture = float(boundaries[i])
+			if aperture <= bound_aperture:
+				move_file(image, main_path + '/' + 'F' + boundaries[i] + '-', copy)
+				break
+			if i == len(boundaries) - 1:
+				move_file(image, main_path + '/' + 'F' + boundaries[i] + '+', copy)
+	print("Operation complete.")
 
 def date(boundaries, copy):
 	pass
