@@ -1,6 +1,6 @@
-# exifSort
+# Photorganize
 
-Welcome to exifSort. To get started you'll probably have to download some stuff. 
+Welcome to Photorganize. To get started you'll probably have to download some stuff. 
 
 ## Installation
 

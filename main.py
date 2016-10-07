@@ -11,7 +11,7 @@ EXIF_INFO = {}
 main_path = ''
 
 def main():
-	print("Welcome to exifSort! \nTo begin, input your image folder path: ")
+	print("Welcome to Photorganize! \nTo begin, input your image folder path: ")
 	path = raw_input('> ')
 	import_data(path)
 
