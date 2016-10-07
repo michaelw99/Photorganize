@@ -16,6 +16,7 @@ def main():
 
 	print("Import complete. You may now input commands. Enter 'help' for a list of commands.")
 	while True:
+		print('Enter a command.')
 		command = raw_input('> ')
 		if command == 'swap':
 			new_path = raw_input('Please enter the new folder path to sort: ')
@@ -30,6 +31,7 @@ def main():
 				type(x)
 			else:
 				print('Please only enter Y or N.')
+				continue
 		elif command == 'shutter':
 			# should probably add wrong input check too
 			resp = raw_input('Automatically sort by shutter speed? (Y/N): ')
@@ -39,6 +41,7 @@ def main():
 				auto = False
 			else:
 				print('Please only enter Y or N.')
+				continue
 			if not auto:
 				def shutterkey(string):
 					if '/' in string:
@@ -58,6 +61,7 @@ def main():
 					shutter(auto, False, boundaries)
 				else:
 					print('Please only enter Y or N.')
+					continue
 			else:
 				copy = raw_input('Keep copy of original files? (Y/N): ')
 				if copy == 'Y':
@@ -66,6 +70,7 @@ def main():
 					shutter(auto, False)
 				else:
 					print('Please only enter Y or N.')
+					continue
 		elif command == 'iso':
 			resp = raw_input('Automatically sort by ISO? (Y/N): ')
 			if resp == 'Y':
@@ -74,6 +79,7 @@ def main():
 				auto = False
 			else:
 				print('Please only enter Y or N.')
+				continue
 			if not auto:
 				inp = raw_input('Enter the iso(s) separated by "," to separate into, i.e 100,200,800: ')
 				boundaries = inp.split(',')
@@ -85,6 +91,7 @@ def main():
 					iso(auto, False, boundaries)
 				else:
 					print('Please only enter Y or N.')
+					continue
 			else:
 				copy = raw_input('Keep copy of original files? (Y/N): ')
 				if copy == 'Y':
@@ -93,6 +100,7 @@ def main():
 					iso(auto, False)
 				else:
 					print('Please only enter Y or N.')
+					continue
 		elif command == 'aperture':
 			resp = raw_input('Automatically sort by aperture? (Y/N): ')
 			if resp == 'Y':
@@ -101,6 +109,7 @@ def main():
 				auto = False
 			else:
 				print('Please only enter Y or N.')
+				continue
 			if not auto:
 				inp = raw_input('Enter the aperture(s) separated by "," to separate into, i.e 1.4,3.5,6,22: ')
 				boundaries = inp.split(',')
@@ -112,6 +121,7 @@ def main():
 					aperture(auto, False, boundaries)
 				else:
 					print('Please only enter Y or N.')
+					continue
 			else:
 				copy = raw_input('Keep copy of original files? (Y/N): ')
 				if copy == 'Y':
@@ -120,7 +130,19 @@ def main():
 					aperture(auto, False)
 				else:
 					print('Please only enter Y or N.')
+					continue
 		elif command == 'date':
+			inp = raw_input('Enter "year", "month", or "day" to sort by: ')
+			if inp != 'year' or inp != 'month' or inp != 'day':
+				print('Please only enter "year", "month", or "day".')
+				continue
+			copy = raw_input('Keep copy of original files? (Y/N): ')
+			if copy == 'Y':
+				aperture(auto, True, boundaries)
+			elif copy == 'N':
+				aperture(auto, False, boundaries)
+			else:
+				print('Please only enter Y or N.')
 			date(None, True)
 		elif command == 'help':
 			print("You're outta luck bub.")
