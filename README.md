@@ -13,6 +13,10 @@ type
 shutter
 iso
 aperture
+date
+help
+exit
+
 More is coming!
 
 Enjoy.

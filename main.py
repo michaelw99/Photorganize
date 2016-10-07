@@ -3,6 +3,7 @@ import os
 import shutil
 import imghdr
 import time
+import datetime
 
 # priority queue to keep sorted by time? 
 # also add auto sorting
@@ -16,7 +17,7 @@ def main():
 
 	print("Import complete. You may now input commands. Enter 'help' for a list of commands.")
 	while True:
-		print('Enter a command.')
+		print('\nEnter a command.')
 		command = raw_input('> ')
 		if command == 'swap':
 			new_path = raw_input('Please enter the new folder path to sort: ')
@@ -133,17 +134,16 @@ def main():
 					continue
 		elif command == 'date':
 			inp = raw_input('Enter "year", "month", or "day" to sort by: ')
-			if inp != 'year' or inp != 'month' or inp != 'day':
+			if inp != 'year' and inp != 'month' and inp != 'day':
 				print('Please only enter "year", "month", or "day".')
 				continue
 			copy = raw_input('Keep copy of original files? (Y/N): ')
 			if copy == 'Y':
-				aperture(auto, True, boundaries)
+				date(inp, True)
 			elif copy == 'N':
-				aperture(auto, False, boundaries)
+				date(inp, False)
 			else:
 				print('Please only enter Y or N.')
-			date(None, True)
 		elif command == 'help':
 			print("You're outta luck bub.")
 		elif command == 'exit':
@@ -188,7 +188,7 @@ def swap(path):
 	main_path = os.path.expanduser("~") + '/' + path
 	EXIF_INFO = {}
 	import_data(path)
-	print('Done.')
+	print('Operation complete.')
 
 # organize by image type, maybe allow more granularity (FINE, MEDIUM, etc.)
 def type(copy):
@@ -259,12 +259,17 @@ def aperture(auto, copy, boundaries=None):
 					move_file(image, main_path + '/F' + boundaries[i] + '+', copy)
 	print("Operation complete.")
 
-def date(boundaries, copy):
-	# for image in EXIF_INFO:
-	# 	datetime = time.strptime(EXIF_INFO[image]['Image timestamp'], '%Y:%m:%d %H:%M:%S')
-
-	# 	for i in range(len(boundaries)):
-	pass
-
+def date(time_type, copy):
+	for image in EXIF_INFO:
+		tim = time.strptime(EXIF_INFO[image]['Image timestamp'], '%Y:%m:%d %H:%M:%S')
+		if time_type == 'year':
+			move_file(image, main_path + '/' + str(tim.tm_year), copy)
+		elif time_type == 'month':
+			move_file(image, main_path + '/' + datetime.date(1900, tim.tm_mon, 1).strftime("%B") + str(tim.tm_year), copy)
+			print(datetime.date(1900, tim.tm_mon, 1).strftime("%B"))
+			print(tim.tm_mon)
+		else:
+			move_file(image, main_path + '/' + str(tim.tm_mday) + datetime.date(1900, 1, tim.tm_mon).strftime("%B") + str(tim.tm_year), copy)
+	print("Operation complete.")
 
 main()
